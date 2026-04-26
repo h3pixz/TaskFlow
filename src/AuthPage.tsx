@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "./config/supabaseClient";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -17,9 +18,9 @@ export default function AuthPage() {
       : await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     } else {
-      console.log("Succesfull! ", data);
+      toast.success(`Succesfull! ${data}`);
     }
 
     setLoading(false);
@@ -38,6 +39,7 @@ export default function AuthPage() {
           <p style={{ color: "#9CA3AF" }}>Minimalist Kanban Task Manager</p>
         </div>
 
+        <Toaster position="top-right" reverseOrder={false} />
         <form onSubmit={handleAuth} className="space-y-4">
           <div>
             <input
