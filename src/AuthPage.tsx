@@ -3,6 +3,8 @@ import { useState } from "react";
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <div
@@ -21,6 +23,8 @@ export default function AuthPage() {
           <div>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email..."
               required
               className="w-full px-4 py-3 rounded border outline-none transition-all focus:border-[#7C3AED]"
@@ -35,6 +39,8 @@ export default function AuthPage() {
           <div className="relative">
             <input
               type={isShowPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               required
               className="w-full px-4 py-3 rounded border outline-none transition-all focus:border-[#7C3AED]"
