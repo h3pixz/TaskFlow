@@ -1,10 +1,29 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { supabase } from "./config/supabaseClient";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { data, error } = isSignUp
+      ? await supabase.auth.signUp({ email, password })
+      : await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      alert(`Error: ${error.message}`);
+    } else {
+      console.log("Succesfull! ", data);
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div
@@ -19,7 +38,7 @@ export default function AuthPage() {
           <p style={{ color: "#9CA3AF" }}>Minimalist Kanban Task Manager</p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleAuth} className="space-y-4">
           <div>
             <input
               type="email"
@@ -63,15 +82,20 @@ export default function AuthPage() {
 
           <button
             type="submit"
+            disabled={loading}
             className="w-full py-3 rounded font-semibold cursor-pointer transition-colors"
             style={{
               backgroundColor: "#7C3AED",
               color: "#FFFFFF",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#6D28D9")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#7C3AED")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#6D28D9")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#7C3AED")
+            }
           >
-            {isSignUp ? "Create account" : "Sign In"}
+            {loading ? "Processing..." : (isSignUp ? "Create account" : "Sign In")}
           </button>
 
           <div className="text-center mt-6">
