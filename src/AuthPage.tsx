@@ -4,12 +4,6 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
-  // Обработчик отправки, чтобы страница не перезагружалась
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submit form", { isSignUp });
-  };
-
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
@@ -23,7 +17,7 @@ export default function AuthPage() {
           <p style={{ color: "#9CA3AF" }}>Minimalist Kanban Task Manager</p>
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4">
           <div>
             <input
               type="email"
@@ -52,7 +46,7 @@ export default function AuthPage() {
             />
 
             <button
-              type="button" // Обязательно! Чтобы не отправлять форму
+              type="button"
               onClick={() => setIsShowPassword(!isShowPassword)}
               className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-sm font-medium"
               style={{ color: "#aaaaaa" }}
