@@ -20,7 +20,7 @@ export default function AuthPage() {
     if (error) {
       toast.error(`Error: ${error.message}`);
     } else {
-      toast.success(`Succesfull! ${data}`);
+      toast.success(`Successful! ${data}`);
     }
 
     setLoading(false);
