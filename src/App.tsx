@@ -1,9 +1,6 @@
-import AuthPage from "./AuthPage"
+import { router } from "./routes"
+import { RouterProvider } from "react-router-dom"
 
 export default function App() {
-  return (
-    <>
-      <AuthPage />
-    </>
-  )
+  return <RouterProvider router={router} />
 }
