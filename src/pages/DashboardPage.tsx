@@ -1,8 +1,14 @@
-import { useEffect } from "react";
-import { LogOut, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { LogOut, Plus, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+interface Board {
+  id: string;
+  title: string;
+}
+
 export function DashboardPage() {
+  const [boards, setBoards] = useState<Board[]>();
   const userEmail = localStorage.getItem("userEmail");
   const navigate = useNavigate();
 
@@ -66,6 +72,29 @@ export function DashboardPage() {
               {userEmail}
             </p>
           </div>
+        </div>
+      </div>
+      <div className="ml-64 p-8">
+        <h1 className="mb-8" style={{ color: "#FFFFFF" }}>
+          My Boards
+        </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <button
+            className="h-32 rounded border-2 border-dashed flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            style={{ borderColor: "#2a2a2a", color: "#7C3AED" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#7C3AED";
+              e.currentTarget.style.backgroundColor = "#1E1E1E";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#2A2A2A";
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <Plus size={24} />
+            <span>Create new board</span>
+          </button>
         </div>
       </div>
     </div>
