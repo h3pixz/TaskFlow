@@ -8,7 +8,10 @@ interface Board {
 }
 
 export function DashboardPage() {
-  const [boards, setBoards] = useState<Board[]>([]);
+  const [boards, setBoards] = useState<Board[]>(() => {
+    const saved = localStorage.getItem('boards');
+    return saved ? (JSON.parse(saved) as Board[]) : [];
+  });
   const userEmail = localStorage.getItem("userEmail");
   const navigate = useNavigate();
 
@@ -17,11 +20,6 @@ export function DashboardPage() {
       navigate("/");
     }
   }, [userEmail, navigate]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('boards');
-    if(saved) setBoards(JSON.parse(saved))
-  }, [])
 
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
@@ -37,9 +35,11 @@ export function DashboardPage() {
       title,
     };
 
-    const updatedBoards = [...boards, newBoard];
-    setBoards(updatedBoards);
-    localStorage.setItem("boards", JSON.stringify(updatedBoards));
+    setBoards((prev) => {
+      const updated = [...prev, newBoard];
+      localStorage.setItem("boards", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
