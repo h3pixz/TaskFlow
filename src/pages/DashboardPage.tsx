@@ -3,14 +3,19 @@ import { LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
-  const userEmail = localStorage.getItem('userEmail');
+  const userEmail = localStorage.getItem("userEmail");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(!userEmail) {
-      navigate('/');
+    if (!userEmail) {
+      navigate("/");
     }
   }, [userEmail, navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("userEmail");
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
@@ -40,6 +45,7 @@ export function DashboardPage() {
           </button>
 
           <button
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2 rounded transition-colors cursor-pointer"
             style={{ color: "#9CA3AF" }}
             onMouseEnter={(e) => {
