@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { supabase } from "../config/supabaseClient";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -8,8 +9,9 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -22,6 +24,9 @@ export default function AuthPage() {
     } else {
       toast.success(`Successful! ${data}`);
     }
+
+    localStorage.setItem('userEmail', email);
+    navigate('/dashboard');
 
     setLoading(false);
   };
@@ -40,7 +45,7 @@ export default function AuthPage() {
         </div>
 
         <Toaster position="top-right" reverseOrder={false} />
-        <form onSubmit={handleAuth} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
               type="email"

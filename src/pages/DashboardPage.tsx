@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import { LogOut, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
+  const userEmail = localStorage.getItem('userEmail');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!userEmail) {
+      navigate('/');
+    }
+  }, [userEmail, navigate]);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
       <div
@@ -43,6 +54,12 @@ export function DashboardPage() {
             <LogOut size={20} />
             <span>LogOut</span>
           </button>
+
+          <div className="absolute bottom-6 left-6 right-6">
+            <p className="text-sm" style={{ color: "#6B7280" }}>
+              {userEmail}
+            </p>
+          </div>
         </div>
       </div>
     </div>
