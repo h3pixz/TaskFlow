@@ -9,7 +9,7 @@ interface Board {
 
 export function DashboardPage() {
   const [boards, setBoards] = useState<Board[]>(() => {
-    const saved = localStorage.getItem('boards');
+    const saved = localStorage.getItem("boards");
     return saved ? (JSON.parse(saved) as Board[]) : [];
   });
   const userEmail = localStorage.getItem("userEmail");
@@ -40,6 +40,13 @@ export function DashboardPage() {
       localStorage.setItem("boards", JSON.stringify(updated));
       return updated;
     });
+  };
+
+  const deleteBoards = (id: string) => {
+    const updatedBoards = boards.filter((b) => b.id !== id);
+    setBoards(updatedBoards);
+    localStorage.setItem('boards', JSON.stringify(updatedBoards));
+    localStorage.removeItem(`board-${id}`);
   };
 
   return (
@@ -131,6 +138,10 @@ export function DashboardPage() {
             >
               <h3 style={{ color: "#ffffff" }}>{board.title}</h3>
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteBoards(board.id);
+                }}
                 className="self-end opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                 style={{ color: "#ef4444" }}
               >
