@@ -18,6 +18,11 @@ export function DashboardPage() {
     }
   }, [userEmail, navigate]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('boards');
+    if(saved) setBoards(JSON.parse(saved))
+  }, [])
+
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
     navigate("/");
