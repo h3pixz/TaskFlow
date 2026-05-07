@@ -3,7 +3,7 @@ import { supabase } from "../config/supabaseClient";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-export default function AuthPage() {
+export function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
