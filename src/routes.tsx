@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
         Component: DashboardPage,
     },
     {
-        path: '/boardpage',
+        path: '/boardpage/:boardId',
         Component: BoardPage,
     }
 ])

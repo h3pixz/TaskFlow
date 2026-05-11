@@ -128,7 +128,7 @@ export function DashboardPage() {
               key={board.id}
               className="h-32 rounded border p-4 flex flex-col justify-between cursor-pointer transition-colors group"
               style={{ backgroundColor: "#1E1E1E", borderColor: "#2A2A2A" }}
-              onClick={() => navigate(`/board/${board.id}`)}
+              onClick={() => navigate(`/boardpage/${board.id}`)}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "#7C3AED";
               }}
