@@ -12,26 +12,23 @@ export function BoardPage() {
   const { boardId } = useParams();
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
-  const [boardTitle, setBoardTitle] = useState('');
 
-  useEffect(() => {
-    if(!userEmail) {
-      navigate('/');
-      return;
-    }
-
+  const boardTitle = () => {
     const savedBoards = localStorage.getItem("boards");
-    if(savedBoards) {
+    if (savedBoards) {
       const boards: Board[] = JSON.parse(savedBoards);
       const currentBoard = boards.find((b) => b.id === boardId);
 
-      if(currentBoard) {
-        setBoardTitle(currentBoard.title);
-      } else {
-        setBoardTitle("Board not find!");
-      }
+      return currentBoard ? currentBoard.title : "Board not found!";
     }
-  }, [boardId, navigate, userEmail]);
+  };
+
+  useEffect(() => {
+    if (!userEmail) {
+      navigate("/");
+      return;
+    }
+  }, [userEmail, navigate]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
@@ -54,10 +51,11 @@ export function BoardPage() {
             <ArrowLeft size={24} />
           </button>
 
-          <h1 className="text-[#9CA3AF]">{boardTitle}</h1>
-
+          <h1 className="text-[#9CA3AF]">{boardTitle()}</h1>
         </div>
-        <p className="text-sm" style={{ color: "#a0a0a0" }}>{userEmail}</p>
+        <p className="text-sm" style={{ color: "#a0a0a0" }}>
+          {userEmail}
+        </p>
       </div>
     </div>
   );
