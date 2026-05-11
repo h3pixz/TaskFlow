@@ -1,8 +1,14 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Column } from "../components/Column";
 
 interface Board {
+  id: string;
+  title: string;
+}
+
+interface ColumnData {
   id: string;
   title: string;
 }
@@ -12,6 +18,11 @@ export function BoardPage() {
   const { boardId } = useParams();
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
+  const [columns, setColums] = useState<ColumnData[]>([
+    { id: "todo", title: "To Do" },
+    { id: "in-progress", title: "In Progress" },
+    { id: "done", title: "Done" },
+  ]);
 
   const boardTitle = () => {
     const savedBoards = localStorage.getItem("boards");
@@ -56,6 +67,21 @@ export function BoardPage() {
         <p className="text-sm" style={{ color: "#a0a0a0" }}>
           {userEmail}
         </p>
+      </div>
+
+      <div className="p-8 overflow-x-auto">
+        <div className="flex gap-6 min-w-max">
+          {columns.map((column) => (
+            <Column
+              key={column.id}
+              column={column}
+              tasks={[]}
+              onAddTask={() => {}}
+              onDeleteColumn={() => {}}
+              onMoveTask={() => {}}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
