@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useDrop } from "react-dnd";
+import { TaskCard } from "./TaskCard";
 
 interface Task {
   id: string;
@@ -20,7 +21,7 @@ interface ColumnProps {
   onMoveTask: (taskId: string, columnId: string) => void;
 }
 
-export function Column({ column, onMoveTask }: ColumnProps) {
+export function Column({ column, onMoveTask, tasks, onAddTask }: ColumnProps) {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
     drop: (item: { id: string }) => {
@@ -33,7 +34,9 @@ export function Column({ column, onMoveTask }: ColumnProps) {
 
   return (
     <div
-      ref={drop}
+      ref={(node) => {
+        drop(node);
+      }}
       className="w-80 rounded border p-4"
       style={{
         backgroundColor: isOver ? "#252525" : "#1A1A1A",
@@ -53,6 +56,7 @@ export function Column({ column, onMoveTask }: ColumnProps) {
             onMouseLeave={(e) => {
               e.currentTarget.style.color = "#7C3AED";
             }}
+            onClick={onAddTask}
           >
             <Plus size={20} />
           </button>
@@ -70,6 +74,9 @@ export function Column({ column, onMoveTask }: ColumnProps) {
           </button>
         </div>
       </div>
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task}/>
+      ))}
     </div>
   );
 }

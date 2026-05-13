@@ -5,6 +5,12 @@ import { Column } from "../components/Column";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 
+interface Task {
+  id: string;
+  title: string;
+  columnId: string;
+}
+
 interface Board {
   id: string;
   title: string;
@@ -15,11 +21,17 @@ interface ColumnData {
   title: string;
 }
 
+interface BoardData {
+  columns: ColumnData[];
+  tasks: Task[];
+}
+
 export function BoardPage() {
   const navigate = useNavigate();
   const { boardId } = useParams();
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [columns, setColums] = useState<ColumnData[]>([
     { id: "todo", title: "To Do" },
     { id: "in-progress", title: "In Progress" },
@@ -41,7 +53,29 @@ export function BoardPage() {
       navigate("/");
       return;
     }
-  }, [userEmail, navigate]);
+
+    if (boardId) {
+    const savedData = localStorage.getItem(`boards-${boardId}`);
+    if (savedData) {
+      const boardData: BoardData = JSON.parse(savedData);
+      setColums(boardData.columns);
+      setTasks(boardData.tasks);
+    }
+  }
+  }, [userEmail, navigate, boardId]);
+
+  const addTask = (columnId: string) => {
+    const title = prompt("Enter task title...");
+    if(!title) return;
+
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title,
+      columnId,
+    };
+
+    setTasks([...tasks, newTask])
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -78,8 +112,8 @@ export function BoardPage() {
               <Column
                 key={column.id}
                 column={column}
-                tasks={[]}
-                onAddTask={() => {}}
+                tasks={tasks.filter(t => t.columnId === column.id)}
+                onAddTask={() => addTask(column.id)}
                 onDeleteColumn={() => {}}
                 onMoveTask={() => {}}
               />
