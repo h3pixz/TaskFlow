@@ -18,9 +18,16 @@ interface ColumnProps {
   tasks: Task[];
   onAddTask: () => void;
   onMoveTask: (taskId: string, columnId: string) => void;
+  onDeleteTask: (id: string) => void;
 }
 
-export function Column({ column, onMoveTask, tasks, onAddTask }: ColumnProps) {
+export function Column({
+  column,
+  onMoveTask,
+  tasks,
+  onAddTask,
+  onDeleteTask,
+}: ColumnProps) {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
     drop: (item: { id: string }) => {
@@ -36,7 +43,7 @@ export function Column({ column, onMoveTask, tasks, onAddTask }: ColumnProps) {
       ref={(node) => {
         drop(node);
       }}
-      className="w-80 rounded border p-4"
+      className="w-80 rounded border p-4 space-y-2"
       style={{
         backgroundColor: isOver ? "#252525" : "#1A1A1A",
         borderColor: isOver ? "#7C3AED" : "#2A2A2A",
@@ -62,7 +69,7 @@ export function Column({ column, onMoveTask, tasks, onAddTask }: ColumnProps) {
         </div>
       </div>
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task}/>
+        <TaskCard key={task.id} task={task} onDelete={onDeleteTask} />
       ))}
     </div>
   );

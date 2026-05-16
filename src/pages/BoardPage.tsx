@@ -101,6 +101,10 @@ export function BoardPage() {
     );
   };
 
+  const deleteTask = (taskId: string) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
@@ -139,6 +143,7 @@ export function BoardPage() {
                 tasks={tasks.filter((t) => t.columnId === column.id)}
                 onAddTask={() => addTask(column.id)}
                 onMoveTask={moveTask}
+                onDeleteTask={deleteTask}
               />
             ))}
           </div>

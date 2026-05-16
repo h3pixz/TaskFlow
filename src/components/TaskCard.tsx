@@ -1,4 +1,5 @@
 import { useDrag } from "react-dnd";
+import { Trash2 } from "lucide-react";
 
 interface Task {
   id: string;
@@ -8,9 +9,10 @@ interface Task {
 
 interface TaskCardProps {
   task: Task;
+  onDelete: (id: string) => void;
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, onDelete }: TaskCardProps) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "TASK",
     item: { id: task.id },
@@ -24,7 +26,7 @@ export function TaskCard({ task }: TaskCardProps) {
       ref={(node) => {
         drag(node);
       }}
-      className="p-3 rounded border cursor-move transition-all"
+      className="p-3 rounded border cursor-move transition-all flex items-center justify-between"
       style={{
         backgroundColor: "#1E1E1E",
         borderColor: "#2A2A2A",
@@ -43,6 +45,9 @@ export function TaskCard({ task }: TaskCardProps) {
       }}
     >
       {task.title}
+      <button style={{color: '#FF2400'}} className="cursor-pointer" onClick={() => onDelete(task.id)}>
+        <Trash2 />
+      </button>
     </div>
   );
 }
