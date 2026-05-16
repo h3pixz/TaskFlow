@@ -48,12 +48,14 @@ export function BoardPage() {
     return savedBoardData?.tasks || [];
   });
 
-  const [columns, setColumns] = useState<ColumnData[]>(() => {
-    return savedBoardData?.columns || [
-      { id: "todo", title: "To Do" },
-      { id: "in-progress", title: "In Progress" },
-      { id: "done", title: "Done" },
-    ];
+  const [columns] = useState<ColumnData[]>(() => {
+    return (
+      savedBoardData?.columns || [
+        { id: "todo", title: "To Do" },
+        { id: "in-progress", title: "In Progress" },
+        { id: "done", title: "Done" },
+      ]
+    );
   });
 
   const boardTitle = () => {
@@ -92,10 +94,12 @@ export function BoardPage() {
   };
 
   const moveTask = (taskId: string, newColumnId: string) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? {...task, columnId: newColumnId } : task
-    ))
-  }
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, columnId: newColumnId } : task,
+      ),
+    );
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
