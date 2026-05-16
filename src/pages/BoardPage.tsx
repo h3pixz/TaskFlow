@@ -91,6 +91,12 @@ export function BoardPage() {
     setTasks((prev) => [...prev, newTask]);
   };
 
+  const moveTask = (taskId: string, newColumnId: string) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? {...task, columnId: newColumnId } : task
+    ))
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
@@ -128,7 +134,7 @@ export function BoardPage() {
                 column={column}
                 tasks={tasks.filter((t) => t.columnId === column.id)}
                 onAddTask={() => addTask(column.id)}
-                onMoveTask={() => {}}
+                onMoveTask={moveTask}
               />
             ))}
           </div>
