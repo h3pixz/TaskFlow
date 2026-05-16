@@ -85,7 +85,7 @@ export function BoardPage() {
     if (!title) return;
 
     const newTask: Task = {
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+      id: crypto.randomUUID(),
       title,
       columnId,
     };
