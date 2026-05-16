@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useDrop } from "react-dnd";
 import { TaskCard } from "./TaskCard";
 
@@ -59,18 +59,6 @@ export function Column({ column, onMoveTask, tasks, onAddTask }: ColumnProps) {
             onClick={onAddTask}
           >
             <Plus size={20} />
-          </button>
-          <button
-            className="transition-colors cursor-pointer"
-            style={{ color: "#6B7280" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#EF4444";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#6B7280";
-            }}
-          >
-            <Trash2 size={18} />
           </button>
         </div>
       </div>

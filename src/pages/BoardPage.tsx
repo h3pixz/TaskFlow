@@ -31,12 +31,24 @@ export function BoardPage() {
   const { boardId } = useParams();
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [columns, setColums] = useState<ColumnData[]>([
-    { id: "todo", title: "To Do" },
-    { id: "in-progress", title: "In Progress" },
-    { id: "done", title: "Done" },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedData = localStorage.getItem(`boards-${boardId}`);
+    if (savedData) {
+      return JSON.parse(savedData).tasks;
+    }
+    return [];
+  });
+  const [columns, setColums] = useState<ColumnData[]>(() => {
+    const savedData = localStorage.getItem(`boards-${boardId}`);
+    if (savedData) {
+      return JSON.parse(savedData).columns;
+    }
+    return [
+      { id: "todo", title: "To Do" },
+      { id: "in-progress", title: "In Progress" },
+      { id: "done", title: "Done" },
+    ];
+  });
 
   const boardTitle = () => {
     const savedBoards = localStorage.getItem("boards");
@@ -53,29 +65,25 @@ export function BoardPage() {
       navigate("/");
       return;
     }
+  }, [userEmail, navigate]);
 
-    if (boardId) {
-    const savedData = localStorage.getItem(`boards-${boardId}`);
-    if (savedData) {
-      const boardData: BoardData = JSON.parse(savedData);
-      setColums(boardData.columns);
-      setTasks(boardData.tasks);
-    }
-  }
-  }, [userEmail, navigate, boardId]);
+  useEffect(() => {
+    const data: BoardData = { columns, tasks };
+    localStorage.setItem(`boards-${boardId}`, JSON.stringify(data));
+  }, [tasks, columns, boardId]);
 
   const addTask = (columnId: string) => {
     const title = prompt("Enter task title...");
-    if(!title) return;
+    if (!title) return;
 
     const newTask: Task = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
       title,
       columnId,
     };
 
-    setTasks([...tasks, newTask])
-  }
+    setTasks((prev) => [...prev, newTask]);
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -112,7 +120,7 @@ export function BoardPage() {
               <Column
                 key={column.id}
                 column={column}
-                tasks={tasks.filter(t => t.columnId === column.id)}
+                tasks={tasks.filter((t) => t.columnId === column.id)}
                 onAddTask={() => addTask(column.id)}
                 onDeleteColumn={() => {}}
                 onMoveTask={() => {}}
