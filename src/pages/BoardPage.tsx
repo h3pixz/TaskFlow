@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Column } from "../components/Column";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
@@ -28,22 +28,28 @@ interface BoardData {
 
 export function BoardPage() {
   const navigate = useNavigate();
-  const { boardId } = useParams();
+  const { boardId } = useParams<{ boardId: string }>();
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
+
+  const savedBoardData = useMemo(() => {
+    if (!boardId) return null;
+    const saved = localStorage.getItem(`boards-${boardId}`);
+
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved) as BoardData;
+    } catch {
+      return null;
+    }
+  }, [boardId]);
+
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedData = localStorage.getItem(`boards-${boardId}`);
-    if (savedData) {
-      return JSON.parse(savedData).tasks;
-    }
-    return [];
+    return savedBoardData?.tasks || [];
   });
-  const [columns, setColums] = useState<ColumnData[]>(() => {
-    const savedData = localStorage.getItem(`boards-${boardId}`);
-    if (savedData) {
-      return JSON.parse(savedData).columns;
-    }
-    return [
+
+  const [columns, setColumns] = useState<ColumnData[]>(() => {
+    return savedBoardData?.columns || [
       { id: "todo", title: "To Do" },
       { id: "in-progress", title: "In Progress" },
       { id: "done", title: "Done" },
@@ -122,7 +128,6 @@ export function BoardPage() {
                 column={column}
                 tasks={tasks.filter((t) => t.columnId === column.id)}
                 onAddTask={() => addTask(column.id)}
-                onDeleteColumn={() => {}}
                 onMoveTask={() => {}}
               />
             ))}

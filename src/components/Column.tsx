@@ -17,7 +17,6 @@ interface ColumnProps {
   column: ColumnData;
   tasks: Task[];
   onAddTask: () => void;
-  onDeleteColumn: () => void;
   onMoveTask: (taskId: string, columnId: string) => void;
 }
 
