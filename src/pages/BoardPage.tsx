@@ -105,6 +105,13 @@ export function BoardPage() {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   }
 
+  const updateTaskTitle = (taskId: string, newTitle: string) => {
+  if (!newTitle.trim()) return;
+  setTasks(tasks.map(task => 
+    task.id === taskId ? { ...task, title: newTitle } : task
+  ));
+};
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen" style={{ backgroundColor: "#121212" }}>
@@ -144,6 +151,7 @@ export function BoardPage() {
                 onAddTask={() => addTask(column.id)}
                 onMoveTask={moveTask}
                 onDeleteTask={deleteTask}
+                onUpdateTaskTitle={updateTaskTitle}
               />
             ))}
           </div>

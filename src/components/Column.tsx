@@ -19,6 +19,7 @@ interface ColumnProps {
   onAddTask: () => void;
   onMoveTask: (taskId: string, columnId: string) => void;
   onDeleteTask: (id: string) => void;
+  onUpdateTaskTitle: (taskId: string, newTitle: string) => void;
 }
 
 export function Column({
@@ -27,6 +28,7 @@ export function Column({
   tasks,
   onAddTask,
   onDeleteTask,
+  onUpdateTaskTitle,
 }: ColumnProps) {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
@@ -69,7 +71,12 @@ export function Column({
         </div>
       </div>
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} onDelete={onDeleteTask} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          onDelete={onDeleteTask}
+          onUpdateTitle={(newTitle) => onUpdateTaskTitle(task.id, newTitle)}
+        />
       ))}
     </div>
   );
