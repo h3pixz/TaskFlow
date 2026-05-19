@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useDrop } from "react-dnd";
 import { TaskCard } from "./TaskCard";
@@ -20,6 +21,7 @@ interface ColumnProps {
   onMoveTask: (taskId: string, columnId: string) => void;
   onDeleteTask: (id: string) => void;
   onUpdateTaskTitle: (taskId: string, newTitle: string) => void;
+  onUpdateColumnTitle: (columnId: string, newTitle: string) => void;
 }
 
 export function Column({
@@ -29,7 +31,11 @@ export function Column({
   onAddTask,
   onDeleteTask,
   onUpdateTaskTitle,
+  onUpdateColumnTitle,
 }: ColumnProps) {
+  const [title, setTitle] = useState(column.title);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
     drop: (item: { id: string }) => {
@@ -38,7 +44,16 @@ export function Column({
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
-  }));
+  }), [column.id, onMoveTask]);
+
+  const handleSave = () => {
+    if (title.trim() && title !== column.title) {
+      onUpdateColumnTitle(column.id, title.trim());
+    } else {
+      setTitle(column.title);
+    }
+    setIsEditing(false);
+  };
 
   return (
     <div
@@ -53,7 +68,37 @@ export function Column({
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 style={{ color: "#FFFFFF" }}>{column.title}</h3>
+        <div className="flex-1 min-w-0 mr-2">
+          {isEditing ? (
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onBlur={handleSave}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSave();
+                if (e.key === "Escape") {
+                  setTitle(column.title);
+                  setIsEditing(false);
+                }
+              }}
+              autoFocus
+              className="w-full bg-transparent border-b outline-none font-medium text-lg py-0.5"
+              style={{ color: "#FFFFFF", borderColor: "#7C3AED" }}
+            />
+          ) : (
+            <h3
+              onClick={() => {
+                setTitle(column.title);
+                setIsEditing(true);
+              }}
+              className="cursor-pointer truncate font-medium text-lg hover:text-gray-300 transition-colors"
+              style={{ color: "#FFFFFF" }}
+            >
+              {column.title}
+            </h3>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <button
             className="transition-colors cursor-pointer"
@@ -74,6 +119,7 @@ export function Column({
         <TaskCard
           key={task.id}
           task={task}
+          boardTitle={column.title}
           onDelete={onDeleteTask}
           onUpdateTitle={(newTitle) => onUpdateTaskTitle(task.id, newTitle)}
         />

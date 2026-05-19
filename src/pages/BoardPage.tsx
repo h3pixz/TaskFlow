@@ -32,10 +32,9 @@ export function BoardPage() {
 
   const [userEmail] = useState(() => localStorage.getItem("userEmail") || "");
 
-  const savedBoardData = useMemo(() => {
+  const initialBoardData = useMemo(() => {
     if (!boardId) return null;
     const saved = localStorage.getItem(`boards-${boardId}`);
-
     if (!saved) return null;
     try {
       return JSON.parse(saved) as BoardData;
@@ -45,12 +44,12 @@ export function BoardPage() {
   }, [boardId]);
 
   const [tasks, setTasks] = useState<Task[]>(() => {
-    return savedBoardData?.tasks || [];
+    return initialBoardData?.tasks || [];
   });
 
-  const [columns] = useState<ColumnData[]>(() => {
+  const [columns, setColumns] = useState<ColumnData[]>(() => {
     return (
-      savedBoardData?.columns || [
+      initialBoardData?.columns || [
         { id: "todo", title: "To Do" },
         { id: "in-progress", title: "In Progress" },
         { id: "done", title: "Done" },
@@ -58,15 +57,20 @@ export function BoardPage() {
     );
   });
 
-  const boardTitle = () => {
+  const boardTitle = useMemo(() => {
+    if (!boardId) return "Board not found!";
     const savedBoards = localStorage.getItem("boards");
     if (savedBoards) {
-      const boards: Board[] = JSON.parse(savedBoards);
-      const currentBoard = boards.find((b) => b.id === boardId);
-
-      return currentBoard ? currentBoard.title : "Board not found!";
+      try {
+        const boards: Board[] = JSON.parse(savedBoards);
+        const currentBoard = boards.find((b) => b.id === boardId);
+        return currentBoard ? currentBoard.title : "Board not found!";
+      } catch {
+        return "Board not found!";
+      }
     }
-  };
+    return "Board not found!";
+  }, [boardId]);
 
   useEffect(() => {
     if (!userEmail) {
@@ -76,6 +80,7 @@ export function BoardPage() {
   }, [userEmail, navigate]);
 
   useEffect(() => {
+    if (!boardId) return;
     const data: BoardData = { columns, tasks };
     localStorage.setItem(`boards-${boardId}`, JSON.stringify(data));
   }, [tasks, columns, boardId]);
@@ -103,14 +108,26 @@ export function BoardPage() {
 
   const deleteTask = (taskId: string) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-  }
+  };
 
   const updateTaskTitle = (taskId: string, newTitle: string) => {
-  if (!newTitle.trim()) return;
-  setTasks(tasks.map(task => 
-    task.id === taskId ? { ...task, title: newTitle } : task
-  ));
-};
+    if (!newTitle.trim()) return;
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, title: newTitle } : task,
+      ),
+    );
+  };
+
+  const updateBoardTitle = (columnId: string, newColumnTitle: string) => {
+    if (!newColumnTitle.trim()) return;
+
+    setColumns(prevColumns => 
+      prevColumns.map(column => 
+        column.id === columnId ? {...column, title: newColumnTitle} : column
+      )
+    );
+  };
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -134,7 +151,7 @@ export function BoardPage() {
               <ArrowLeft size={24} />
             </button>
 
-            <h1 className="text-[#9CA3AF]">{boardTitle()}</h1>
+            <h1 className="text-[#9CA3AF]">{boardTitle}</h1>
           </div>
           <p className="text-sm" style={{ color: "#a0a0a0" }}>
             {userEmail}
@@ -152,6 +169,7 @@ export function BoardPage() {
                 onMoveTask={moveTask}
                 onDeleteTask={deleteTask}
                 onUpdateTaskTitle={updateTaskTitle}
+                onUpdateColumnTitle={updateBoardTitle}
               />
             ))}
           </div>

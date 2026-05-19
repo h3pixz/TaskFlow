@@ -10,6 +10,7 @@ interface Task {
 
 interface TaskCardProps {
   task: Task;
+  boardTitle: string;
   onDelete: (id: string) => void;
   onUpdateTitle: (newTitle: string) => void;
 }
